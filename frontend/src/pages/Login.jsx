@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogIn, Mail, Lock, AlertCircle, Loader, Sparkles } from 'lucide-react';
+import { LogIn, Mail, Lock, AlertCircle, Loader } from 'lucide-react';
 
 export default function Login() {
   const { login } = useAuth();
@@ -24,106 +24,194 @@ export default function Login() {
     }
   };
 
-  const inputStyle = {
-    background: 'var(--bg-input)',
-    color: 'var(--text-primary)',
-    border: '1px solid var(--border)',
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: 'var(--bg-primary)' }}>
-      {/* Decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full opacity-20 blur-3xl"
-          style={{ background: 'var(--primary)' }}></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl"
-          style={{ background: 'var(--secondary)' }}></div>
-      </div>
-
-      <div className="w-full max-w-md animate-fade-in relative">
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '48px 16px',
+      background: '#f9fafb',
+    }}>
+      <div style={{ width: '100%', maxWidth: '440px' }} className="animate-fade-in">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-            style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))', boxShadow: 'var(--shadow-glow)' }}>
-            <Sparkles className="w-8 h-8 text-white" />
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            background: '#111827',
+            marginBottom: '20px',
+          }}>
+            <span style={{ color: 'white', fontWeight: 700, fontSize: '20px' }}>LF</span>
           </div>
-          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#111827', margin: 0 }}>
             Welcome Back
           </h1>
-          <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Sign in to Campus Lost & Found
+          <p style={{ marginTop: '8px', fontSize: '14px', color: '#6b7280' }}>
+            Sign in to Campus Lost &amp; Found
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="glass rounded-2xl p-8" style={{ boxShadow: 'var(--shadow-xl)' }}>
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: '16px',
+          padding: '40px 36px',
+          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.06)',
+        }}>
           {error && (
-            <div className="flex items-center gap-2 p-3 rounded-xl mb-6 animate-fade-in"
-              style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-              <AlertCircle className="w-4 h-4 shrink-0" style={{ color: 'var(--danger)' }} />
-              <p className="text-sm" style={{ color: 'var(--danger)' }}>{error}</p>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '14px 16px',
+              borderRadius: '12px',
+              marginBottom: '28px',
+              background: '#fef2f2',
+              border: '1px solid #fecaca',
+            }} className="animate-fade-in">
+              <AlertCircle style={{ width: '16px', height: '16px', flexShrink: 0, color: '#dc2626' }} />
+              <p style={{ fontSize: '14px', color: '#dc2626', margin: 0 }}>{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+          <form onSubmit={handleSubmit}>
+            {/* Email Field */}
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: 500,
+                color: '#374151',
+                marginBottom: '10px',
+              }}>
+                Email Address
+              </label>
+              <div style={{ position: 'relative' }}>
+                <Mail style={{
+                  position: 'absolute',
+                  left: '14px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '16px',
+                  height: '16px',
+                  color: '#9ca3af',
+                }} />
                 <input
                   type="email"
                   required
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   placeholder="you@university.edu"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all"
-                  style={inputStyle}
-                  onFocus={(e) => e.currentTarget.style.borderColor = 'var(--primary)'}
-                  onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+                  style={{
+                    width: '100%',
+                    paddingLeft: '44px',
+                    paddingRight: '16px',
+                    paddingTop: '14px',
+                    paddingBottom: '14px',
+                    borderRadius: '12px',
+                    fontSize: '14px',
+                    outline: 'none',
+                    background: '#f9fafb',
+                    color: '#111827',
+                    border: '1.5px solid #e5e7eb',
+                    transition: 'border-color 0.2s, background 0.2s',
+                    boxSizing: 'border-box',
+                  }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = '#111827'; e.currentTarget.style.background = '#ffffff'; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
                   id="login-email"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+            {/* Password Field */}
+            <div style={{ marginBottom: '32px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: 500,
+                color: '#374151',
+                marginBottom: '10px',
+              }}>
+                Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <Lock style={{
+                  position: 'absolute',
+                  left: '14px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '16px',
+                  height: '16px',
+                  color: '#9ca3af',
+                }} />
                 <input
                   type="password"
                   required
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all"
-                  style={inputStyle}
-                  onFocus={(e) => e.currentTarget.style.borderColor = 'var(--primary)'}
-                  onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+                  style={{
+                    width: '100%',
+                    paddingLeft: '44px',
+                    paddingRight: '16px',
+                    paddingTop: '14px',
+                    paddingBottom: '14px',
+                    borderRadius: '12px',
+                    fontSize: '14px',
+                    outline: 'none',
+                    background: '#f9fafb',
+                    color: '#111827',
+                    border: '1.5px solid #e5e7eb',
+                    transition: 'border-color 0.2s, background 0.2s',
+                    boxSizing: 'border-box',
+                  }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = '#111827'; e.currentTarget.style.background = '#ffffff'; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
                   id="login-password"
                 />
               </div>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-semibold text-sm transition-all duration-300 disabled:opacity-60"
               style={{
-                background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
-                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                padding: '14px 24px',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#ffffff',
+                background: '#111827',
+                border: 'none',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.5 : 1,
+                transition: 'all 0.2s',
               }}
-              onMouseEnter={(e) => { if (!loading) e.currentTarget.style.transform = 'translateY(-1px)'; }}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = '#1f2937'; e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)'; } }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#111827'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
               id="login-submit"
             >
-              {loading ? <Loader className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
+              {loading ? <Loader style={{ width: '16px', height: '16px', animation: 'spin 1s linear infinite' }} /> : <LogIn style={{ width: '16px', height: '16px' }} />}
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <p className="text-center mt-6 text-sm" style={{ color: 'var(--text-muted)' }}>
+          <p style={{ textAlign: 'center', marginTop: '28px', fontSize: '14px', color: '#9ca3af' }}>
             Don't have an account?{' '}
-            <Link to="/register" className="font-semibold" style={{ color: 'var(--primary-light)' }}>
+            <Link to="/register" style={{ fontWeight: 600, color: '#111827', textDecoration: 'none' }}>
               Create one
             </Link>
           </p>

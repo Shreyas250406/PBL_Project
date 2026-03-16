@@ -43,57 +43,62 @@ export default function FoundItems() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 animate-fade-in">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-          style={{ background: 'rgba(16,185,129,0.12)' }}>
-          <CheckCircle className="w-5 h-5" style={{ color: '#10b981' }} />
+    <div className="page-container animate-fade-in">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center"
+          style={{ background: '#ecfdf5' }}>
+          <CheckCircle className="w-5 h-5" style={{ color: '#059669' }} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Found Items</h1>
-          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{pagination.total} items found & reported</p>
+          <h1 className="text-2xl font-bold" style={{ color: '#111827' }}>Found Items</h1>
+          <p className="text-sm" style={{ color: '#6b7280' }}>{pagination.total} items found & reported</p>
         </div>
       </div>
 
       <SearchBar filters={filters} onFilterChange={setFilters} />
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <Loader className="w-8 h-8 animate-spin" style={{ color: 'var(--primary)' }} />
+        <div className="flex justify-center py-20">
+          <Loader className="w-8 h-8 animate-spin" style={{ color: '#111827' }} />
         </div>
       ) : items.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 stagger">
+          <div className="grid-cards stagger">
             {items.map((item) => (
               <ItemCard key={item._id} item={item} />
             ))}
           </div>
 
           {pagination.pages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-8">
+            <div className="flex items-center justify-center gap-3 mt-10">
               <button onClick={() => setFilters({ ...filters, page: filters.page - 1 })}
                 disabled={filters.page <= 1}
-                className="p-2 rounded-lg disabled:opacity-30 transition-colors"
-                style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                className="p-2.5 rounded-xl disabled:opacity-30 transition-all duration-200 cursor-pointer"
+                style={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#374151' }}
+                onMouseEnter={(e) => { if (filters.page > 1) e.currentTarget.style.borderColor = '#111827'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e5e7eb'; }}>
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="text-sm px-4" style={{ color: 'var(--text-secondary)' }}>
+              <span className="text-sm px-4 font-medium" style={{ color: '#6b7280' }}>
                 Page {pagination.page} of {pagination.pages}
               </span>
               <button onClick={() => setFilters({ ...filters, page: filters.page + 1 })}
                 disabled={filters.page >= pagination.pages}
-                className="p-2 rounded-lg disabled:opacity-30 transition-colors"
-                style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                className="p-2.5 rounded-xl disabled:opacity-30 transition-all duration-200 cursor-pointer"
+                style={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#374151' }}
+                onMouseEnter={(e) => { if (filters.page < pagination.pages) e.currentTarget.style.borderColor = '#111827'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e5e7eb'; }}>
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           )}
         </>
       ) : (
-        <div className="text-center py-16 rounded-2xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-          <Package className="w-12 h-12 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
-          <h3 className="text-lg font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>No items found</h3>
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Try adjusting your search or filters</p>
+        <div className="text-center py-20 rounded-2xl"
+          style={{ background: '#f9fafb', border: '1px solid #e5e7eb' }}>
+          <Package className="w-12 h-12 mx-auto mb-4" style={{ color: '#d1d5db' }} />
+          <h3 className="text-lg font-semibold mb-1" style={{ color: '#374151' }}>No items found</h3>
+          <p className="text-sm" style={{ color: '#9ca3af' }}>Try adjusting your search or filters</p>
         </div>
       )}
     </div>
