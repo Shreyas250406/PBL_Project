@@ -1,0 +1,12 @@
+{
+  "name": "lost-found-campus-app",
+  "version": "1.0.0",
+  "description": "Full-stack Lost & Found Web Application for College Campus",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "npx -y concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "start": "cd backend && npm start"
+  }
+}
