@@ -14,11 +14,11 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 
 // Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded images
+// Serve uploaded images (only works locally, not on Vercel serverless)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
@@ -43,20 +43,33 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to MongoDB and start server
-const PORT = process.env.PORT || 5000;
+// MongoDB connection with caching for serverless
+let isConnected = false;
 
-mongoose
-  .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/lost-found-campus')
-  .then(() => {
+const connectDB = async () => {
+  if (isConnected) return;
+
+  try {
+    const db = await mongoose.connect(
+      process.env.MONGODB_URI || 'mongodb+srv://ashassauti_db:pict123@cluster0.jogias5.mongodb.net/lostfound?retryWrites=true&w=majority'
+    );
+    isConnected = db.connections[0].readyState === 1;
     console.log('✅ Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error('❌ MongoDB connection error:', err.message);
-    process.exit(1);
+    throw err;
+  }
+};
+
+// Connect to MongoDB eagerly
+connectDB();
+
+// Start server only in non-production (local development)
+const PORT = process.env.PORT || 5000;
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
   });
+}
 
 module.exports = app;
