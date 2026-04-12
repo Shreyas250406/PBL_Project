@@ -22,26 +22,37 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB connection with caching for serverless
-let isConnected = false;
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 const connectDB = async () => {
-  if (isConnected) return;
-
-  // Reuse existing connection if mongoose is already connected
-  if (mongoose.connection.readyState === 1) {
-    isConnected = true;
-    return;
+  if (cached.conn) {
+    return cached.conn;
   }
 
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+
+    cached.promise = mongoose.connect(
+      process.env.MONGODB_URI || 'mongodb+srv://ashassauti_db:pict123@cluster0.jogias5.mongodb.net/lostfound?retryWrites=true&w=majority',
+      opts
+    ).then((mongoose) => {
+      console.log('✅ Connected to MongoDB');
+      return mongoose;
+    });
+  }
+  
   try {
-    await mongoose.connect(
-      process.env.MONGODB_URI || 'mongodb+srv://ashassauti_db:pict123@cluster0.jogias5.mongodb.net/lostfound?retryWrites=true&w=majority'
-    );
-    isConnected = true;
-    console.log('✅ Connected to MongoDB');
+    cached.conn = await cached.promise;
+    return cached.conn;
   } catch (err) {
+    cached.promise = null;
     console.error('❌ MongoDB connection error:', err.message);
-    isConnected = false;
     throw err;
   }
 };
@@ -82,8 +93,18 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 if (process.env.NODE_ENV !== 'production') {
   connectDB().then(() => {
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
+    });
+    server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.log(`⚠️ Port ${PORT} is in use, trying port ${PORT + 1}...`);
+        app.listen(PORT + 1, () => {
+          console.log(`🚀 Server running on port ${PORT + 1}`);
+        });
+      } else {
+        console.error('Server error:', err);
+      }
     });
   });
 }
