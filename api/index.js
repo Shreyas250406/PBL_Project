@@ -1,7 +1,13 @@
 // Vercel Serverless Function entry point
-// Load .env from backend directory before anything else
+// On Vercel, env vars are injected automatically via the dashboard.
+// Only attempt to load .env for local development fallback.
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', 'backend', '.env') });
+const fs = require('fs');
+
+const envPath = path.join(__dirname, '..', 'backend', '.env');
+if (fs.existsSync(envPath)) {
+  require('dotenv').config({ path: envPath });
+}
 
 const app = require('../backend/server');
 

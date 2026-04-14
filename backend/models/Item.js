@@ -55,6 +55,19 @@ const itemSchema = new mongoose.Schema({
     enum: ['active', 'claimed', 'resolved', 'expired'],
     default: 'active',
   },
+  claimedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null,
+  },
+  claimedAt: {
+    type: Date,
+    default: null,
+  },
+  autoDeleteAt: {
+    type: Date,
+    default: null,
+  },
 }, {
   timestamps: true,
 });

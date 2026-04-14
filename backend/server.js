@@ -8,18 +8,18 @@ const authRoutes = require('./routes/auth');
 const itemRoutes = require('./routes/items');
 const matchRoutes = require('./routes/matches');
 const claimRoutes = require('./routes/claims');
-const notificationRoutes = require('./routes/notifications');
 const adminRoutes = require('./routes/admin');
+const reverificationRoutes = require('./routes/reverifications');
+const Item = require('./models/Item');
 
 const app = express();
 
 // Middleware
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Serve uploaded images (only works locally, not on Vercel serverless)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Images are stored as Base64 data URIs in MongoDB — no static file serving needed
 
 // MongoDB connection with caching for serverless
 let cached = global.mongoose;
@@ -63,7 +63,10 @@ app.use(async (req, res, next) => {
     await connectDB();
     next();
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Database connection failed' });
+    console.error('❌ DB middleware error:', err.message);
+    const uri = process.env.MONGODB_URI;
+    console.error('MONGODB_URI set:', !!uri, uri ? `(starts with ${uri.substring(0, 20)}...)` : '(not set)');
+    res.status(500).json({ success: false, message: 'Database connection failed', error: err.message });
   }
 });
 
@@ -72,13 +75,39 @@ app.use('/api/auth', authRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/claims', claimRoutes);
-app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/reverifications', reverificationRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// Auto-delete cleanup: expire claimed items past their autoDeleteAt date
+const runCleanup = async () => {
+  try {
+    const now = new Date();
+    const expired = await Item.find({
+      status: 'claimed',
+      autoDeleteAt: { $lte: now },
+    });
+
+    if (expired.length > 0) {
+      for (const item of expired) {
+        item.status = 'expired';
+        await item.save();
+      }
+      console.log(`🧹 Auto-expired ${expired.length} unchallenged claimed item(s)`);
+    }
+  } catch (err) {
+    console.error('Cleanup error:', err.message);
+  }
+};
+
+// Run cleanup every hour
+setInterval(runCleanup, 60 * 60 * 1000);
+// Also run once at startup (after a short delay to let DB connect)
+setTimeout(runCleanup, 10000);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -98,9 +127,10 @@ if (process.env.NODE_ENV !== 'production') {
     });
     server.on('error', (err) => {
       if (err.code === 'EADDRINUSE') {
-        console.log(`⚠️ Port ${PORT} is in use, trying port ${PORT + 1}...`);
-        app.listen(PORT + 1, () => {
-          console.log(`🚀 Server running on port ${PORT + 1}`);
+        const fallback = PORT + 1;
+        console.log(`⚠️ Port ${PORT} is in use, trying port ${fallback}...`);
+        app.listen(fallback, () => {
+          console.log(`🚀 Server running on port ${fallback}`);
         });
       } else {
         console.error('Server error:', err);

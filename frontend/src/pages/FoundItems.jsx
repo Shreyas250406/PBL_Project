@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import ItemCard from '../components/ItemCard';
 import SearchBar from '../components/SearchBar';
-import { CheckCircle, Loader, Package, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CheckCircle, Loader, Package, ChevronLeft, ChevronRight, UserCheck, ShieldAlert } from 'lucide-react';
 
 export default function FoundItems() {
   const [searchParams] = useSearchParams();
@@ -42,6 +42,9 @@ export default function FoundItems() {
     }
   };
 
+  const activeItems = items.filter(i => i.status === 'active');
+  const claimedItems = items.filter(i => i.status === 'claimed');
+
   return (
     <div className="page-container animate-fade-in">
       <div className="flex items-center gap-4 mb-8">
@@ -57,17 +60,66 @@ export default function FoundItems() {
 
       <SearchBar filters={filters} onFilterChange={setFilters} />
 
+      {/* Info banner about claimed items */}
+      {claimedItems.length > 0 && (
+        <div className="flex items-start gap-3 p-4 rounded-xl mb-6 animate-fade-in"
+          style={{ background: '#fef3c7', border: '1px solid #fcd34d' }}>
+          <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#92400e' }} />
+          <div>
+            <p className="text-sm font-semibold" style={{ color: '#92400e' }}>
+              {claimedItems.length} item{claimedItems.length !== 1 ? 's' : ''} already claimed
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: '#78350f' }}>
+              If you believe a claimed item belongs to you, click on it to request a re-verification from the current claimer.
+              Items are auto-removed after 15 days if unchallenged.
+            </p>
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="flex justify-center py-20">
           <Loader className="w-8 h-8 animate-spin" style={{ color: '#111827' }} />
         </div>
       ) : items.length > 0 ? (
         <>
-          <div className="grid-cards stagger">
-            {items.map((item) => (
-              <ItemCard key={item._id} item={item} />
-            ))}
-          </div>
+          {/* Active Items */}
+          {activeItems.length > 0 && (
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <CheckCircle className="w-4 h-4" style={{ color: '#059669' }} />
+                <h2 className="text-base font-semibold" style={{ color: '#111827' }}>
+                  Available Items ({activeItems.length})
+                </h2>
+              </div>
+              <div className="grid-cards stagger">
+                {activeItems.map((item) => (
+                  <ItemCard key={item._id} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Claimed Items */}
+          {claimedItems.length > 0 && (
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <UserCheck className="w-4 h-4" style={{ color: '#92400e' }} />
+                <h2 className="text-base font-semibold" style={{ color: '#111827' }}>
+                  Claimed Items ({claimedItems.length})
+                </h2>
+                <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                  style={{ background: '#fef3c7', color: '#92400e' }}>
+                  Disputable
+                </span>
+              </div>
+              <div className="grid-cards stagger">
+                {claimedItems.map((item) => (
+                  <ItemCard key={item._id} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
 
           {pagination.pages > 1 && (
             <div className="flex items-center justify-center gap-3 mt-10">

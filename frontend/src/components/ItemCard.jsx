@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom"
-import { MapPin, Calendar, ImageOff } from "lucide-react"
+import { MapPin, Calendar, ImageOff, UserCheck, Clock } from "lucide-react"
 
 const API_BASE = ""
 
 export default function ItemCard({ item, variant="default" }) {
 
+  const isClaimed = item.status === 'claimed';
+  const daysRemaining = item.autoDeleteAt
+    ? Math.max(0, Math.ceil((new Date(item.autoDeleteAt) - new Date()) / (1000 * 60 * 60 * 24)))
+    : null;
 
   /* COMPACT CARD (Lost / Found pages) */
 
@@ -84,16 +88,25 @@ export default function ItemCard({ item, variant="default" }) {
 
 
 
-  /* DEFAULT CARD (Dashboard) */
+  /* DEFAULT CARD (Dashboard + Found Items) */
 
   return(
 
     <Link
       to={`/item/${item._id}`}
-      className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition"
+      className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition relative"
     >
 
-      <div className="h-40 bg-gray-100 overflow-hidden">
+      {/* Claimed overlay badge */}
+      {isClaimed && (
+        <div className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold"
+          style={{ background: 'rgba(254, 243, 199, 0.95)', color: '#92400e', backdropFilter: 'blur(4px)', border: '1px solid #f59e0b' }}>
+          <UserCheck size={12} />
+          Claimed
+        </div>
+      )}
+
+      <div className="h-40 bg-gray-100 overflow-hidden relative">
 
         {item.imageUrl ? (
           <img
@@ -104,6 +117,22 @@ export default function ItemCard({ item, variant="default" }) {
         ):(
           <div className="flex items-center justify-center h-full text-gray-400">
             <ImageOff size={26}/>
+          </div>
+        )}
+
+        {/* Countdown timer for claimed items */}
+        {isClaimed && daysRemaining !== null && (
+          <div className="absolute bottom-0 left-0 right-0 px-3 py-2 flex items-center gap-1.5"
+            style={{
+              background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
+              color: '#ffffff',
+            }}>
+            <Clock size={11} />
+            <span style={{ fontSize: '10px', fontWeight: 600 }}>
+              {daysRemaining > 0
+                ? `${daysRemaining}d left to dispute`
+                : 'Dispute window closed'}
+            </span>
           </div>
         )}
 
@@ -133,6 +162,15 @@ export default function ItemCard({ item, variant="default" }) {
           </div>
 
         </div>
+
+        {/* Claimed by info */}
+        {isClaimed && item.claimedBy && (
+          <div className="flex items-center gap-1.5 pt-1 text-xs"
+            style={{ color: '#92400e' }}>
+            <UserCheck size={11} />
+            <span className="font-medium">Claimed by {item.claimedBy?.name || 'someone'}</span>
+          </div>
+        )}
 
       </div>
 

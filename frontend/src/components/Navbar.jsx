@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import api from '../services/api';
 import {
-  Search, Bell, Menu, X, LogOut, LayoutDashboard, FileText, Eye, ShieldCheck,
-  ChevronDown, User
+  Search, Menu, X, LogOut, LayoutDashboard, FileText, Eye, ShieldCheck,
+  ChevronDown
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -13,43 +12,16 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const profileRef = useRef(null);
-  const notifRef = useRef(null);
-
-  useEffect(() => {
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const handleClick = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
-      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
-
-  const fetchNotifications = async () => {
-    try {
-      const res = await api.get('/notifications');
-      setNotifications(res.data.notifications || []);
-      setUnreadCount(res.data.unreadCount || 0);
-    } catch {}
-  };
-
-  const markAllRead = async () => {
-    try {
-      await api.patch('/notifications/read-all');
-      setUnreadCount(0);
-      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    } catch {}
-  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -143,65 +115,6 @@ export default function Navbar() {
                 />
               </div>
             </form>
-
-            {/* Notifications */}
-            <div className="relative" ref={notifRef}>
-              <button
-                onClick={() => setNotifOpen(!notifOpen)}
-                className="relative p-2 rounded-xl transition-all duration-200 cursor-pointer"
-                style={{ color: '#6b7280', background: 'transparent', border: 'none' }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#f3f4f6'; e.currentTarget.style.color = '#111827'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6b7280'; }}
-                id="notification-bell"
-              >
-                <Bell className="w-5 h-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full text-white text-xs flex items-center justify-center font-bold"
-                    style={{ background: '#dc2626', fontSize: '10px' }}>
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </button>
-              {notifOpen && (
-                <div className="absolute right-0 mt-2 w-80 rounded-xl overflow-hidden animate-scale-in"
-                  style={{ background: '#ffffff', border: '1px solid #e5e7eb', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
-                  <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #f3f4f6' }}>
-                    <h3 className="font-semibold text-sm" style={{ color: '#111827' }}>Notifications</h3>
-                    {unreadCount > 0 && (
-                      <button onClick={markAllRead} className="text-xs font-medium cursor-pointer"
-                        style={{ color: '#111827', background: 'none', border: 'none' }}>
-                        Mark all read
-                      </button>
-                    )}
-                  </div>
-                  <div className="max-h-80 overflow-y-auto">
-                    {notifications.length === 0 ? (
-                      <p className="text-center py-10 text-sm" style={{ color: '#9ca3af' }}>No notifications</p>
-                    ) : (
-                      notifications.slice(0, 8).map((n) => (
-                        <div
-                          key={n._id}
-                          className="px-4 py-3 transition-colors cursor-pointer"
-                          style={{
-                            background: n.read ? 'transparent' : '#f9fafb',
-                            borderBottom: '1px solid #f3f4f6',
-                          }}
-                          onClick={() => {
-                            if (n.relatedItemId) navigate(`/item/${n.relatedItemId}`);
-                            setNotifOpen(false);
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
-                          onMouseLeave={(e) => e.currentTarget.style.background = n.read ? 'transparent' : '#f9fafb'}
-                        >
-                          <p className="text-sm font-medium" style={{ color: '#111827' }}>{n.title}</p>
-                          <p className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>{n.message}</p>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* Profile */}
             <div className="relative" ref={profileRef}>

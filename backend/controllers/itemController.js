@@ -15,7 +15,7 @@ exports.reportLostItem = async (req, res) => {
       description,
       location,
       date,
-      imageUrl: req.file ? `/uploads/${req.file.filename}` : '',
+      imageUrl: req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : '',
       contactInfo: { phone: contactPhone || '', email: contactEmail || '' },
       reportedBy: req.user._id,
     });
@@ -47,7 +47,7 @@ exports.reportFoundItem = async (req, res) => {
       description,
       location,
       date,
-      imageUrl: req.file ? `/uploads/${req.file.filename}` : '',
+      imageUrl: req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : '',
       contactInfo: { phone: contactPhone || '', email: contactEmail || '' },
       reportedBy: req.user._id,
     });
@@ -108,12 +108,13 @@ exports.getLostItems = async (req, res) => {
   }
 };
 
-// @desc    Get all found items
+// @desc    Get all found items (includes active + claimed for re-verification)
 // @route   GET /api/items/found
 exports.getFoundItems = async (req, res) => {
   try {
     const { category, color, search, sort, page = 1, limit = 12 } = req.query;
-    const query = { type: 'found', status: 'active' };
+    // Show both active and claimed items so Person C can dispute claims
+    const query = { type: 'found', status: { $in: ['active', 'claimed'] } };
 
     if (category) query.category = category;
     if (color) query.color = { $regex: color, $options: 'i' };
@@ -133,6 +134,7 @@ exports.getFoundItems = async (req, res) => {
     const total = await Item.countDocuments(query);
     const items = await Item.find(query)
       .populate('reportedBy', 'name email')
+      .populate('claimedBy', 'name email')
       .sort(sortOption)
       .skip(skip)
       .limit(parseInt(limit));
@@ -156,7 +158,9 @@ exports.getFoundItems = async (req, res) => {
 // @route   GET /api/items/:id
 exports.getItem = async (req, res) => {
   try {
-    const item = await Item.findById(req.params.id).populate('reportedBy', 'name email');
+    const item = await Item.findById(req.params.id)
+      .populate('reportedBy', 'name email')
+      .populate('claimedBy', 'name email');
 
     if (!item) {
       return res.status(404).json({ success: false, message: 'Item not found' });

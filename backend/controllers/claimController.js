@@ -1,6 +1,5 @@
 const Claim = require('../models/Claim');
 const Item = require('../models/Item');
-const Notification = require('../models/Notification');
 
 // @desc    Create a claim
 // @route   POST /api/claims
@@ -23,15 +22,6 @@ exports.createClaim = async (req, res) => {
       itemId,
       claimedBy: req.user._id,
       message,
-    });
-
-    // Notify the item owner
-    await Notification.create({
-      userId: item.reportedBy,
-      type: 'claim_received',
-      title: 'New Claim Received',
-      message: `Someone has claimed your ${item.type} item "${item.name}". Check your claims for details.`,
-      relatedItemId: item._id,
     });
 
     res.status(201).json({ success: true, claim });
@@ -91,20 +81,17 @@ exports.updateClaimStatus = async (req, res) => {
     if (adminNote) claim.adminNote = adminNote;
     await claim.save();
 
-    // If approved, update item status
+    // If approved, update item status and set re-verification window
     if (status === 'approved') {
-      await Item.findByIdAndUpdate(claim.itemId, { status: 'claimed' });
+      const now = new Date();
+      const autoDeleteAt = new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000); // 15 days
+      await Item.findByIdAndUpdate(claim.itemId, {
+        status: 'claimed',
+        claimedBy: claim.claimedBy,
+        claimedAt: now,
+        autoDeleteAt,
+      });
     }
-
-    // Notify the claimer
-    const notificationType = status === 'approved' ? 'claim_approved' : 'claim_rejected';
-    await Notification.create({
-      userId: claim.claimedBy,
-      type: notificationType,
-      title: `Claim ${status === 'approved' ? 'Approved' : 'Rejected'}`,
-      message: `Your claim has been ${status}. ${adminNote || ''}`,
-      relatedItemId: claim.itemId,
-    });
 
     res.json({ success: true, claim });
   } catch (error) {

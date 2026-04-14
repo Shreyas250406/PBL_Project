@@ -1,6 +1,6 @@
 const Item = require('../models/Item');
 const Match = require('../models/Match');
-const Notification = require('../models/Notification');
+
 
 /**
  * Calculate match score between a lost item and a found item.
@@ -90,7 +90,7 @@ function calculateMatchScore(lostItem, foundItem) {
 
 /**
  * Run matching for a given item against all items of the opposite type.
- * Creates Match documents for scores > 30 and notifies users for scores > 60.
+ * Creates Match documents for scores > 30.
  */
 async function runMatching(item) {
   const oppositeType = item.type === 'lost' ? 'found' : 'lost';
@@ -115,18 +115,6 @@ async function runMatching(item) {
           { upsert: true, new: true }
         );
         matches.push(match);
-
-        // Notify if strong match
-        if (totalScore > 60) {
-          const notifyUserId = candidate.reportedBy;
-          await Notification.create({
-            userId: notifyUserId,
-            type: 'match_found',
-            title: 'Potential Match Found!',
-            message: `Your ${candidate.type} item "${candidate.name}" has a potential match (score: ${totalScore}%) with a ${item.type} item "${item.name}".`,
-            relatedItemId: candidate._id,
-          });
-        }
       } catch (err) {
         // Skip duplicate key errors
         if (err.code !== 11000) throw err;
