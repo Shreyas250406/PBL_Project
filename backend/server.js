@@ -42,7 +42,7 @@ const connectDB = async () => {
       process.env.MONGODB_URI || 'mongodb+srv://ashassauti_db:pict123@cluster0.jogias5.mongodb.net/lostfound?retryWrites=true&w=majority',
       opts
     ).then((mongoose) => {
-      console.log('✅ Connected to MongoDB');
+      console.log('Connected to MongoDB');
       return mongoose;
     });
   }
@@ -52,7 +52,7 @@ const connectDB = async () => {
     return cached.conn;
   } catch (err) {
     cached.promise = null;
-    console.error('❌ MongoDB connection error:', err.message);
+    console.error('MongoDB connection error:', err.message);
     throw err;
   }
 };
@@ -63,7 +63,7 @@ app.use(async (req, res, next) => {
     await connectDB();
     next();
   } catch (err) {
-    console.error('❌ DB middleware error:', err.message);
+    console.error('DB middleware error:', err.message);
     const uri = process.env.MONGODB_URI;
     console.error('MONGODB_URI set:', !!uri, uri ? `(starts with ${uri.substring(0, 20)}...)` : '(not set)');
     res.status(500).json({ success: false, message: 'Database connection failed', error: err.message });
@@ -123,14 +123,14 @@ const PORT = process.env.PORT || 5000;
 if (process.env.NODE_ENV !== 'production') {
   connectDB().then(() => {
     const server = app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
     server.on('error', (err) => {
       if (err.code === 'EADDRINUSE') {
         const fallback = PORT + 1;
-        console.log(`⚠️ Port ${PORT} is in use, trying port ${fallback}...`);
+        console.log(`Port ${PORT} is in use, trying port ${fallback}...`);
         app.listen(fallback, () => {
-          console.log(`🚀 Server running on port ${fallback}`);
+          console.log(`Server running on port ${fallback}`);
         });
       } else {
         console.error('Server error:', err);

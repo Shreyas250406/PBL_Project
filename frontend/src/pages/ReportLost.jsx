@@ -9,16 +9,16 @@ import {
 } from 'lucide-react';
 
 const categories = [
-  { value: 'phone', label: '📱 Phone' },
-  { value: 'wallet', label: '👛 Wallet' },
-  { value: 'bag', label: '🎒 Bag' },
-  { value: 'id_card', label: '🪪 ID Card' },
-  { value: 'laptop', label: '💻 Laptop' },
-  { value: 'keys', label: '🔑 Keys' },
-  { value: 'books', label: '📚 Books' },
-  { value: 'clothing', label: '👕 Clothing' },
-  { value: 'electronics', label: '🔌 Electronics' },
-  { value: 'other', label: '📦 Other' },
+  { value: 'phone', label: 'Phone' },
+  { value: 'wallet', label: 'Wallet' },
+  { value: 'bag', label: 'Bag' },
+  { value: 'id_card', label: 'ID Card' },
+  { value: 'laptop', label: 'Laptop' },
+  { value: 'keys', label: 'Keys' },
+  { value: 'books', label: 'Books' },
+  { value: 'clothing', label: 'Clothing' },
+  { value: 'electronics', label: 'Electronics' },
+  { value: 'other', label: 'Other' },
 ];
 
 export default function ReportLost() {
@@ -81,7 +81,7 @@ export default function ReportLost() {
           <div className="p-4 rounded-xl mb-6 animate-fade-in"
             style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
             <p className="font-semibold" style={{ color: '#d97706' }}>
-              🎉 {matchesFound} potential match{matchesFound > 1 ? 'es' : ''} found!
+              {matchesFound} potential match{matchesFound > 1 ? 'es' : ''} found!
             </p>
             <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>
               Check your dashboard for details

@@ -8,24 +8,23 @@ function getScoreColor(score) {
 }
 
 function getScoreLabel(score) {
-  if (score >= 80) return 'Strong Match';
-  if (score >= 60) return 'Possible Match';
-  return 'Weak Match';
+  if (score >= 80) return 'Strong';
+  if (score >= 60) return 'Possible';
+  return 'Weak';
 }
 
 export default function MatchList({ matches, currentItemId }) {
   if (!matches || matches.length === 0) {
     return (
-      <div className="text-center py-10 rounded-xl"
-        style={{ background: '#f9fafb', border: '1px solid #e5e7eb' }}>
-        <TrendingUp className="w-10 h-10 mx-auto mb-3" style={{ color: '#d1d5db' }} />
-        <p className="text-sm" style={{ color: '#9ca3af' }}>No matches found yet</p>
+      <div className="text-center py-12 bg-gray-50 border border-gray-200 rounded-xl">
+        <TrendingUp className="w-8 h-8 mx-auto mb-3 text-gray-300" />
+        <p className="text-sm text-gray-500">No matches found yet</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {matches.map((match) => {
         const otherItem = match.lostItemId?._id === currentItemId ? match.foundItemId : match.lostItemId;
         if (!otherItem) return null;
@@ -35,55 +34,43 @@ export default function MatchList({ matches, currentItemId }) {
           <Link
             key={match._id}
             to={`/item/${otherItem._id}`}
-            className="block p-5 rounded-xl transition-all duration-200"
-            style={{ background: '#f9fafb', border: '1px solid #e5e7eb' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = color;
-              e.currentTarget.style.transform = 'translateX(4px)';
-              e.currentTarget.style.background = '#ffffff';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.06)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = '#e5e7eb';
-              e.currentTarget.style.transform = 'translateX(0)';
-              e.currentTarget.style.background = '#f9fafb';
-              e.currentTarget.style.boxShadow = 'none';
-            }}
+            className="block p-4 bg-gray-50 border border-gray-200 rounded-xl hover:border-gray-300 hover:bg-white hover:shadow-sm transition-all duration-200"
           >
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {otherItem.imageUrl ? (
-                  <img src={otherItem.imageUrl} alt="" className="w-12 h-12 rounded-lg object-cover" />
+                  <img src={otherItem.imageUrl} alt="" className="w-10 h-10 rounded-lg object-cover bg-gray-100" />
                 ) : (
-                  <div className="w-12 h-12 rounded-lg flex items-center justify-center text-xs font-bold"
-                    style={{ background: '#f3f4f6', color: '#9ca3af' }}>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-medium bg-gray-200 text-gray-500">
                     {otherItem.type === 'lost' ? 'L' : 'F'}
                   </div>
                 )}
                 <div>
-                  <h4 className="text-sm font-semibold" style={{ color: '#111827' }}>
+                  <h4 className="text-sm font-semibold text-gray-900">
                     {otherItem.name}
                   </h4>
-                  <span className="text-xs capitalize px-2 py-0.5 rounded"
-                    style={{
-                      background: otherItem.type === 'lost' ? '#fef2f2' : '#ecfdf5',
-                      color: otherItem.type === 'lost' ? '#dc2626' : '#059669',
-                    }}>
-                    {otherItem.type}
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded ${
+                    otherItem.type === 'lost' 
+                      ? 'bg-amber-50 text-amber-700' 
+                      : 'bg-emerald-50 text-emerald-700'
+                  }`}>
+                    {otherItem.type === 'lost' ? 'Lost' : 'Found'}
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <div className="text-right">
-                  <div className="text-lg font-bold" style={{ color }}>{match.matchScore}%</div>
+                  <div className="text-base font-semibold" style={{ color }}>{match.matchScore}%</div>
                   <div className="text-xs" style={{ color }}>{getScoreLabel(match.matchScore)}</div>
                 </div>
-                <ArrowRight className="w-4 h-4" style={{ color: '#d1d5db' }} />
+                <ArrowRight className="w-4 h-4 text-gray-400" />
               </div>
             </div>
-            {/* Score breakdown bar */}
-            <div className="score-bar mt-2">
-              <div className="score-bar-fill" style={{ width: `${match.matchScore}%`, background: color }}></div>
+            <div className="mt-3 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+              <div 
+                className="h-full rounded-full transition-all duration-300" 
+                style={{ width: `${match.matchScore}%`, background: color }}
+              ></div>
             </div>
           </Link>
         );

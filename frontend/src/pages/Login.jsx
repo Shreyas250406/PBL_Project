@@ -25,193 +25,76 @@ export default function Login() {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '48px 16px',
-      background: '#f9fafb',
-    }}>
-      <div style={{ width: '100%', maxWidth: '440px' }} className="animate-fade-in">
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '64px',
-            height: '64px',
-            borderRadius: '16px',
-            background: '#111827',
-            marginBottom: '20px',
-          }}>
-            <span style={{ color: 'white', fontWeight: 700, fontSize: '20px' }}>LF</span>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
+      <div className="w-full max-w-md animate-fade-in">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-900 mb-5">
+            <span className="text-white font-bold text-xl">LF</span>
           </div>
-          <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#111827', margin: 0 }}>
-            Welcome Back
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+            Sign in
           </h1>
-          <p style={{ marginTop: '8px', fontSize: '14px', color: '#6b7280' }}>
-            Sign in to Campus Lost &amp; Found
+          <p className="mt-2 text-sm text-gray-500">
+            Welcome back to Campus Lost & Found
           </p>
         </div>
 
-        {/* Form Card */}
-        <div style={{
-          background: '#ffffff',
-          border: '1px solid #e5e7eb',
-          borderRadius: '16px',
-          padding: '40px 36px',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.06)',
-        }}>
+        <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
           {error && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '14px 16px',
-              borderRadius: '12px',
-              marginBottom: '28px',
-              background: '#fef2f2',
-              border: '1px solid #fecaca',
-            }} className="animate-fade-in">
-              <AlertCircle style={{ width: '16px', height: '16px', flexShrink: 0, color: '#dc2626' }} />
-              <p style={{ fontSize: '14px', color: '#dc2626', margin: 0 }}>{error}</p>
+            <div className="flex items-center gap-3 p-4 mb-6 rounded-xl bg-red-50 border border-red-200 animate-fade-in">
+              <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
+              <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-            {/* Email Field */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{
-                display: 'block',
-                fontSize: '14px',
-                fontWeight: 500,
-                color: '#374151',
-                marginBottom: '10px',
-              }}>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2.5">
                 Email Address
               </label>
-              <div style={{ position: 'relative' }}>
-                <Mail style={{
-                  position: 'absolute',
-                  left: '14px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '16px',
-                  height: '16px',
-                  color: '#9ca3af',
-                }} />
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="email"
                   required
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   placeholder="you@university.edu"
-                  style={{
-                    width: '100%',
-                    paddingLeft: '44px',
-                    paddingRight: '16px',
-                    paddingTop: '14px',
-                    paddingBottom: '14px',
-                    borderRadius: '12px',
-                    fontSize: '14px',
-                    outline: 'none',
-                    background: '#f9fafb',
-                    color: '#111827',
-                    border: '1.5px solid #e5e7eb',
-                    transition: 'border-color 0.2s, background 0.2s',
-                    boxSizing: 'border-box',
-                  }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = '#111827'; e.currentTarget.style.background = '#ffffff'; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
-                  id="login-email"
+                  className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 focus:bg-white focus:ring-2 focus:ring-gray-900/5 transition-all"
                 />
               </div>
             </div>
 
-            {/* Password Field */}
-            <div style={{ marginBottom: '32px' }}>
-              <label style={{
-                display: 'block',
-                fontSize: '14px',
-                fontWeight: 500,
-                color: '#374151',
-                marginBottom: '10px',
-              }}>
+            <div className="mb-8">
+              <label className="block text-sm font-medium text-gray-700 mb-2.5">
                 Password
               </label>
-              <div style={{ position: 'relative' }}>
-                <Lock style={{
-                  position: 'absolute',
-                  left: '14px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '16px',
-                  height: '16px',
-                  color: '#9ca3af',
-                }} />
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="password"
                   required
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  placeholder="••••••••"
-                  style={{
-                    width: '100%',
-                    paddingLeft: '44px',
-                    paddingRight: '16px',
-                    paddingTop: '14px',
-                    paddingBottom: '14px',
-                    borderRadius: '12px',
-                    fontSize: '14px',
-                    outline: 'none',
-                    background: '#f9fafb',
-                    color: '#111827',
-                    border: '1.5px solid #e5e7eb',
-                    transition: 'border-color 0.2s, background 0.2s',
-                    boxSizing: 'border-box',
-                  }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = '#111827'; e.currentTarget.style.background = '#ffffff'; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
-                  id="login-password"
+                  placeholder="Enter your password"
+                  className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 focus:bg-white focus:ring-2 focus:ring-gray-900/5 transition-all"
                 />
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '10px',
-                padding: '14px 24px',
-                borderRadius: '12px',
-                fontSize: '14px',
-                fontWeight: 600,
-                color: '#ffffff',
-                background: '#111827',
-                border: 'none',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.5 : 1,
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = '#1f2937'; e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)'; } }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = '#111827'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-              id="login-submit"
+              className="w-full flex items-center justify-center gap-2.5 py-3 px-5 bg-gray-900 text-white font-semibold text-sm rounded-xl hover:bg-gray-800 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? <Loader style={{ width: '16px', height: '16px', animation: 'spin 1s linear infinite' }} /> : <LogIn style={{ width: '16px', height: '16px' }} />}
+              {loading ? <Loader className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', marginTop: '28px', fontSize: '14px', color: '#9ca3af' }}>
+          <p className="text-center mt-7 text-sm text-gray-400">
             Don't have an account?{' '}
-            <Link to="/register" style={{ fontWeight: 600, color: '#111827', textDecoration: 'none' }}>
+            <Link to="/register" className="font-semibold text-gray-900 hover:underline">
               Create one
             </Link>
           </p>

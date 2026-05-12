@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 
 export default function ImageUploader({ onFileSelect, currentPreview }) {
   const [preview, setPreview] = useState(currentPreview || null);
@@ -51,50 +51,39 @@ export default function ImageUploader({ onFileSelect, currentPreview }) {
       />
 
       {preview ? (
-        <div className="relative rounded-xl overflow-hidden animate-scale-in"
-          style={{ border: '1px solid #e5e7eb' }}>
+        <div className="relative rounded-xl overflow-hidden border border-gray-200">
           <img src={preview} alt="Preview" className="w-full h-48 object-cover" />
           <button
             type="button"
             onClick={removeImage}
-            className="absolute top-3 right-3 p-1.5 rounded-lg transition-all duration-200 cursor-pointer"
-            style={{ background: 'rgba(0,0,0,0.5)', color: 'white' }}
-            onMouseEnter={(e) => e.currentTarget.style.background = '#dc2626'}
-            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}
-            id="remove-image"
+            className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-900 text-white hover:bg-gray-700 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
       ) : (
         <div
-          className="relative rounded-xl p-12 text-center cursor-pointer transition-all duration-200"
-          style={{
-            background: dragActive ? '#f9fafb' : '#fafafa',
-            border: `2px dashed ${dragActive ? '#111827' : '#d1d5db'}`,
-          }}
+          className={`rounded-xl p-10 text-center cursor-pointer transition-all duration-200 border-2 border-dashed ${
+            dragActive
+              ? 'border-gray-900 bg-gray-50'
+              : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100'
+          }`}
           onClick={() => inputRef.current?.click()}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#111827'; e.currentTarget.style.background = '#f9fafb'; }}
-          onMouseLeave={(e) => {
-            if (!dragActive) { e.currentTarget.style.borderColor = '#d1d5db'; e.currentTarget.style.background = '#fafafa'; }
-          }}
-          id="image-drop-zone"
         >
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-              style={{ background: '#f3f4f6' }}>
-              <Upload className="w-6 h-6" style={{ color: '#6b7280' }} />
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center">
+              <Upload className="w-5 h-5 text-gray-500" />
             </div>
             <div>
-              <p className="text-sm font-medium" style={{ color: '#374151' }}>
-                Drop an image here, or <span style={{ color: '#111827', fontWeight: 600 }}>browse</span>
+              <p className="text-sm font-medium text-gray-700">
+                Drop image or <span className="text-gray-900 underline">browse</span>
               </p>
-              <p className="text-xs mt-1.5" style={{ color: '#9ca3af' }}>
-                JPEG, PNG, WebP or GIF • Max 5MB
+              <p className="text-xs text-gray-400 mt-1">
+                PNG, JPG up to 5MB
               </p>
             </div>
           </div>
