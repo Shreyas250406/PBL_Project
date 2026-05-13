@@ -85,7 +85,8 @@ export default function Navbar() {
 
   const navLinks = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/report-lost', label: 'Report', icon: FilePlus },
+    { to: '/report-lost', label: 'Report Lost Item', icon: FilePlus },
+    { to: '/report-found', label: 'Report Found Item', icon: FilePlus },
     { to: '/lost-items', label: 'Lost Items', icon: Eye },
     { to: '/found-items', label: 'Found Items', icon: Eye },
     ...(isAdmin ? [{ to: '/admin', label: 'Admin', icon: ShieldCheck }] : []),
@@ -125,12 +126,12 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden lg:flex items-center gap-0.5">
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
-              className={`px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${
+              className={`px-3 py-2 text-xs font-medium transition-all duration-200 rounded-lg whitespace-nowrap ${
                 isActive(link.to)
                   ? 'bg-gray-100 text-gray-900'
                   : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'

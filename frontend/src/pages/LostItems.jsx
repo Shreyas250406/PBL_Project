@@ -61,18 +61,19 @@ export default function LostItems() {
 
   return (
 
-    <div className="page-container pt-20 animate-fade-in">
+    <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       {/* HEADER */}
 
       <div className="flex items-center gap-4 mb-8">
 
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-red-50">
-          <AlertTriangle className="w-5 h-5 text-red-600"/>
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-100 shrink-0">
+          <AlertTriangle className="w-6 h-6 text-amber-600"/>
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold">Lost Items</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Lost Items</h1>
           <p className="text-sm text-gray-500">
             {pagination.total} items reported lost
           </p>
@@ -156,10 +157,11 @@ export default function LostItems() {
 
         </div>
 
-      )}
+)}
+
+      </div>
 
     </div>
 
   )
-
 }

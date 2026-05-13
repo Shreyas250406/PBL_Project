@@ -46,15 +46,15 @@ export default function FoundItems() {
   const claimedItems = items.filter(i => i.status === 'claimed');
 
   return (
-    <div className="page-container pt-20 animate-fade-in">
+    <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-          style={{ background: '#ecfdf5' }}>
-          <CheckCircle className="w-5 h-5" style={{ color: '#059669' }} />
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-100 shrink-0">
+          <CheckCircle className="w-6 h-6 text-emerald-600" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: '#111827' }}>Found Items</h1>
-          <p className="text-sm" style={{ color: '#6b7280' }}>{pagination.total} items found & reported</p>
+          <h1 className="text-2xl font-bold text-gray-900">Found Items</h1>
+          <p className="text-sm text-gray-500">{pagination.total} items found & reported</p>
         </div>
       </div>
 
@@ -152,7 +152,10 @@ export default function FoundItems() {
           <h3 className="text-lg font-semibold mb-1" style={{ color: '#374151' }}>No items found</h3>
           <p className="text-sm" style={{ color: '#9ca3af' }}>Try adjusting your search or filters</p>
         </div>
-      )}
+)}
+
+      </div>
+
     </div>
   );
 }
