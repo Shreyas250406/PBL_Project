@@ -61,7 +61,7 @@ export default function LostItems() {
 
   return (
 
-    <div className="page-container animate-fade-in">
+    <div className="page-container pt-20 animate-fade-in">
 
       {/* HEADER */}
 

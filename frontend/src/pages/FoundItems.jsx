@@ -46,7 +46,7 @@ export default function FoundItems() {
   const claimedItems = items.filter(i => i.status === 'claimed');
 
   return (
-    <div className="page-container animate-fade-in">
+    <div className="page-container pt-20 animate-fade-in">
       <div className="flex items-center gap-4 mb-8">
         <div className="w-11 h-11 rounded-xl flex items-center justify-center"
           style={{ background: '#ecfdf5' }}>
