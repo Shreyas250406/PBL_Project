@@ -24,10 +24,14 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['student', 'admin'],
-    default: 'student',
+    enum: ['USER', 'ADMIN'],
+    default: 'USER',
   },
   avatar: {
+    type: String,
+    default: '',
+  },
+  phone: {
     type: String,
     default: '',
   },

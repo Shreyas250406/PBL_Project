@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 
 import Navbar from './components/Navbar'
@@ -11,7 +11,11 @@ import ReportFound from './pages/ReportFound'
 import LostItems from './pages/LostItems'
 import FoundItems from './pages/FoundItems'
 import ItemDetail from './pages/ItemDetail'
-import AdminPanel from './pages/AdminPanel'
+import AdminLayout from './pages/admin/AdminLayout'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminUsers from './pages/admin/AdminUsers'
+import AdminItems from './pages/admin/AdminItems'
+import AdminLogin from './pages/AdminLogin'
 
 import { Loader } from 'lucide-react'
 
@@ -52,21 +56,22 @@ function AdminRoute({children}){
 export default function App(){
 
   const {user,loading}=useAuth()
+  const location = useLocation()
 
   if(loading) return <LoadingScreen/>
 
   return(
 
     <div className="min-h-screen">
+      {!location.pathname.startsWith('/admin') && user && <Navbar/>}
 
-      {user && <Navbar/>}
-
-      <main className="main-content">
+      <main className={!location.pathname.startsWith('/admin') ? "main-content" : ""}>
 
         <Routes>
 
           <Route path="/login" element={user ? <Navigate to="/dashboard"/> : <Login/>}/>
           <Route path="/register" element={user ? <Navigate to="/dashboard"/> : <Register/>}/>
+          <Route path="/admin/login" element={<AdminLogin/>}/>
 
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
           <Route path="/report-lost" element={<ProtectedRoute><ReportLost/></ProtectedRoute>}/>
@@ -77,7 +82,13 @@ export default function App(){
 
           <Route path="/item/:id" element={<ProtectedRoute><ItemDetail/></ProtectedRoute>}/>
 
-          <Route path="/admin" element={<AdminRoute><AdminPanel/></AdminRoute>}/>
+          <Route path="/admin" element={<AdminRoute><AdminLayout/></AdminRoute>}>
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard/>} />
+            <Route path="users" element={<AdminUsers/>} />
+            <Route path="lost-items" element={<AdminItems type="lost" />} />
+            <Route path="found-items" element={<AdminItems type="found" />} />
+          </Route>
 
           <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"}/>}/>
 

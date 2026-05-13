@@ -88,8 +88,54 @@ exports.deleteItem = async (req, res) => {
 // @route   GET /api/admin/users
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find().sort({ createdAt: -1 });
-    res.json({ success: true, users });
+    const usersWithCounts = await User.aggregate([
+      {
+        $lookup: {
+          from: 'items',
+          localField: '_id',
+          foreignField: 'reportedBy',
+          as: 'reports'
+        }
+      },
+      {
+        $project: {
+          name: 1,
+          email: 1,
+          phone: 1,
+          role: 1,
+          createdAt: 1,
+          reportCount: { $size: '$reports' }
+        }
+      },
+      { $sort: { createdAt: -1 } }
+    ]);
+
+    res.json({ success: true, users: usersWithCounts });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Update item status (admin)
+// @route   PATCH /api/admin/items/:id/status
+exports.updateItemStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['active', 'claimed', 'resolved', 'expired'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status' });
+    }
+
+    const item = await Item.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Item not found' });
+    }
+
+    res.json({ success: true, item });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
