@@ -15,7 +15,6 @@ import AdminLayout from './pages/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminItems from './pages/admin/AdminItems'
-import AdminLogin from './pages/AdminLogin'
 
 import { Loader } from 'lucide-react'
 
@@ -69,9 +68,8 @@ export default function App(){
 
         <Routes>
 
-          <Route path="/login" element={user ? <Navigate to="/dashboard"/> : <Login/>}/>
+          <Route path="/login" element={user ? (user.role === 'ADMIN' ? <Navigate to="/admin/dashboard"/> : <Navigate to="/dashboard"/>) : <Login/>}/>
           <Route path="/register" element={user ? <Navigate to="/dashboard"/> : <Register/>}/>
-          <Route path="/admin/login" element={<AdminLogin/>}/>
 
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
           <Route path="/report-lost" element={<ProtectedRoute><ReportLost/></ProtectedRoute>}/>

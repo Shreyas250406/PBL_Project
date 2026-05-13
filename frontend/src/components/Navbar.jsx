@@ -262,7 +262,7 @@ export default function Navbar() {
                 <div className="px-4 py-3 border-b border-gray-100">
                   <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
                   <p className="text-xs text-gray-500 mt-0.5">{user?.email}</p>
-                  {user?.role === 'admin' && (
+                  {user?.role === 'ADMIN' && (
                     <span className="inline-block mt-2 px-2 py-0.5 bg-amber-50 text-amber-700 text-xs font-medium rounded">
                       Admin
                     </span>
