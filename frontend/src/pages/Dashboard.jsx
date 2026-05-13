@@ -192,27 +192,7 @@ export default function Dashboard(){
           )}
         </div>
 
-        <div className="border-t border-gray-200 pt-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <p className="text-xl font-bold text-gray-900">{myItems.filter(i => i.type === 'lost').length}</p>
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mt-1">Lost</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xl font-bold text-gray-900">{myItems.filter(i => i.type === 'found').length}</p>
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mt-1">Found</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xl font-bold text-gray-900">{strongMatches}</p>
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mt-1">Matches</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xl font-bold text-gray-900">{myItems.length}</p>
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mt-1">Total</p>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
   )
 }
