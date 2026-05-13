@@ -8,8 +8,9 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const seedAdmin = async () => {
   try {
-    const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/lost-found-campus';
-    console.log('Connecting to:', uri);
+    const cloudUri = 'mongodb+srv://ashassauti_db:pict123@cluster0.jogias5.mongodb.net/lostfound?retryWrites=true&w=majority';
+    const uri = process.env.MONGODB_URI || cloudUri;
+    console.log('Connecting to:', uri.split('@')[1] || uri); // Log only the cluster part for safety
     
     await mongoose.connect(uri);
 
