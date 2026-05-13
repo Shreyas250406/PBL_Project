@@ -57,8 +57,8 @@ export default function Dashboard(){
   }
 
   return (
-    <div className="page-container pt-24 w-full">
-      <div className="max-w-7xl mx-auto">
+    <div className="page-container pt-24">
+      <div className="max-w-7xl mx-auto w-full">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
             Welcome back, {user?.name?.split(' ')[0]}
